@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Business Sales Tracker{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav class="nav">
+  <div class="brand">Business Sales Tracker</div>
+  {% if session.get("user_id") %}
+  <div class="navlinks">
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('subscription') }}">Subscription</a>
+    {% if session.get("role") == "admin" %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+  {% endif %}
+</nav>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
