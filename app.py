@@ -23,9 +23,25 @@ class User(db.Model):
     role = db.Column(db.String(20), default="user")
     subscription_expires = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def subscription_active(self):
+        def subscription_active(self):
         return self.subscription_expires and self.subscription_expires > datetime.utcnow()
+    
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    name = db.Column(db.String(150), nullable=False)
+    category = db.Column(db.String(100), nullable=True)
+    buying_price = db.Column(db.Float, nullable=False, default=0)
+    selling_price = db.Column(db.Float, nullable=False, default=0)
+    quantity = db.Column(db.Float, nullable=False, default=0)
+    low_stock_level = db.Column(db.Float, nullable=False, default=5)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Product {self.name}>"
+   
 
 @app.route("/")
 def home():
