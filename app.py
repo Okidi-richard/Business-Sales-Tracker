@@ -23,7 +23,7 @@ class User(db.Model):
     role = db.Column(db.String(20), default="user")
     subscription_expires = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-        def subscription_active(self):
+    def subscription_active(self):
         return self.subscription_expires and self.subscription_expires > datetime.utcnow()
     
 class Product(db.Model):
