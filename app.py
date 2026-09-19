@@ -123,7 +123,7 @@ def subscription():
 def activate_subscription(user_id):
     user = current_user()
 
-   if not user or user.role not in ["admin", "owner"]:
+    if not user or user.role not in ["admin", "owner"]:
         flash("Administrator access required.", "error")
         return redirect(url_for("dashboard"))
 
@@ -138,6 +138,7 @@ def activate_subscription(user_id):
 
     flash(f"Subscription activated for {target_user.name} for 30 days.", "success")
     return redirect(url_for("admin"))
+
 
 @app.route("/admin")
 def admin():
