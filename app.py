@@ -123,7 +123,7 @@ def subscription():
 def activate_subscription(user_id):
     user = current_user()
 
-    if not user or user.role != "admin":
+   if not user or user.role not in ["admin", "owner"]:
         flash("Administrator access required.", "error")
         return redirect(url_for("dashboard"))
 
@@ -142,7 +142,7 @@ def activate_subscription(user_id):
 @app.route("/admin")
 def admin():
     user = current_user()
-    if not user or user.role != "admin":
+    if not user or user.role not in ["admin", "owner"]:
         flash("Administrator access required.", "error")
         return redirect(url_for("dashboard"))
     users = User.query.order_by(User.created_at.desc()).all()
