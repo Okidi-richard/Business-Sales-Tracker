@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Sales</h1>
+    <p>Record and manage your business sales.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <h2>Record New Sale</h2>
+
+        <form method="POST">
+
+            <label for="product_id">Product</label>
+            <select name="product_id" id="product_id" required>
+                <option value="">-- Select Product --</option>
+
+                {% for product in products %}
+                    <option value="{{ product.id }}">
+                        {{ product.name }} -
+                        UGX {{ "{:,.0f}".format(product.selling_price) }}
+                        (Stock: {{ product.quantity }})
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="customer_id">Customer</label>
+            <select name="customer_id" id="customer_id">
+                <option value="">-- Walk-in Customer --</option>
+
+                {% for customer in customers %}
+                    <option value="{{ customer.id }}">
+                        {{ customer.name }}
+                        {% if customer.phone %}
+                            - {{ customer.phone }}
+                        {% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="quantity">Quantity</label>
+            <input
+                type="number"
+                name="quantity"
+                id="quantity"
+                min="0.01"
+                step="0.01"
+                required
+            >
+
+            <label for="amount_paid">Amount Paid (UGX)</label>
+            <input
+                type="number"
+                name="amount_paid"
+                id="amount_paid"
+                min="0"
+                step="1"
+                required
+            >
+
+            <button type="submit">Record Sale</button>
+
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Recent Sales</h2>
+
+        {% if sales %}
+
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                        <th>Balance</th>
+                        <th>Receipt</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for sale in sales %}
+
+                    <tr>
+                        <td>
+                            {{ sale.created_at.strftime("%d %b %Y %H:%M") }}
+                        </td>
+
+                        <td>
+                            {% if sale.customer %}
+                                {{ sale.customer.name }}
+                            {% else %}
+                                Walk-in Customer
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            UGX {{ "{:,.0f}".format(sale.total) }}
+                        </td>
+
+                        <td>
+                            UGX {{ "{:,.0f}".format(sale.amount_paid) }}
+                        </td>
+
+                        <td>
+                            UGX {{ "{:,.0f}".format(sale.total - sale.amount_paid) }}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('receipt', sale_id=sale.id) }}">
+                                View Receipt
+                            </a>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+
+            <p>No sales recorded yet.</p>
+
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
