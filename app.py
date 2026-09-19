@@ -150,7 +150,7 @@ def activate_my_subscription():
 
     flash("Subscription activated for 30 days.", "success")
     return redirect(url_for("dashboard"))
-    @app.route("/admin")
+@app.route("/admin")
 def admin():
     user = current_user()
     if not user or user.role != "admin":
