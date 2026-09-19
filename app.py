@@ -138,18 +138,7 @@ def activate_subscription(user_id):
 
     flash(f"Subscription activated for {target_user.name} for 30 days.", "success")
     return redirect(url_for("admin"))
-@app.route("/activate-subscription", methods=["POST"])
-def activate_my_subscription():
-    user = current_user()
 
-    if not user:
-        return redirect(url_for("login"))
-
-    user.subscription_expires = datetime.utcnow() + timedelta(days=30)
-    db.session.commit()
-
-    flash("Subscription activated for 30 days.", "success")
-    return redirect(url_for("dashboard"))
 @app.route("/admin")
 def admin():
     user = current_user()
