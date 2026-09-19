@@ -1,24 +1,51 @@
 {% extends "base.html" %}
+
 {% block title %}Admin{% endblock %}
+
 {% block content %}
+
 <h1>Administrator Panel</h1>
+
 <p>Registered businesses: <strong>{{ users|length }}</strong></p>
+
 <div class="table-wrap">
-<table>
-<tr><th>Business</th><th>Owner</th><th>Phone</th><th>Role</th><th>Subscription</th></tr>
-{% for u in users %}
-<tr>
-<td>{{ u.business_name }}</td>
-<td>{{ u.name }}</td>
-<td>{{ u.phone }}</td>
-<td>{{ u.role }}</td>
-<td>
-{% if u.subscription_active() %}
-Active until {{ u.subscription_expires.strftime('%d %b %Y') }}
-{% else %}Not active{% endif %}
-</td>
-</tr>
-{% endfor %}
-</table>
+    <table>
+        <tr>
+            <th>Business</th>
+            <th>Owner</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Subscription</th>
+            <th>Action</th>
+        </tr>
+
+        {% for u in users %}
+        <tr>
+            <td>{{ u.business_name }}</td>
+            <td>{{ u.name }}</td>
+            <td>{{ u.phone }}</td>
+            <td>{{ u.role }}</td>
+
+            <td>
+                {% if u.subscription_active() %}
+                    Active until {{ u.subscription_expires.strftime('%d %b %Y') }}
+                {% else %}
+                    Not active
+                {% endif %}
+            </td>
+
+            <td>
+                <form method="POST"
+                      action="{{ url_for('activate_subscription', user_id=u.id) }}">
+                    <button type="submit">
+                        Activate 30 Days
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
 </div>
+
 {% endblock %}
