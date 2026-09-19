@@ -119,7 +119,25 @@ def subscription():
     if not user:
         return redirect(url_for("login"))
     return render_template("subscription.html", user=user)
+@app.route("/admin/activate-subscription/<int:user_id>", methods=["POST"])
+def activate_subscription(user_id):
+    user = current_user()
 
+    if not user or user.role != "admin":
+        flash("Administrator access required.", "error")
+        return redirect(url_for("dashboard"))
+
+    target_user = db.session.get(User, user_id)
+
+    if not target_user:
+        flash("User not found.", "error")
+        return redirect(url_for("admin"))
+
+    target_user.subscription_expires = datetime.utcnow() + timedelta(days=30)
+    db.session.commit()
+
+    flash(f"Subscription activated for {target_user.name} for 30 days.", "success")
+    return redirect(url_for("admin"))
 @app.route("/admin")
 def admin():
     user = current_user()
