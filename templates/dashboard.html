@@ -7,6 +7,17 @@
 <div class="header-row">
     <div>
         <h1>{{ user.business_name }}</h1>
+
+        {% if user.tagline %}
+        <p><strong>{{ user.tagline }}</strong></p>
+        {% endif %}
+
+        {% if user.address %}
+        <p>📍 {{ user.address }}</p>
+        {% endif %}
+
+        <p>📞 {{ user.phone }}</p>
+
         <p>Welcome, {{ user.user_name }}</p>
     </div>
 
