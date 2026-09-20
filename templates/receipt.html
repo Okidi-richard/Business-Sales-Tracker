@@ -97,12 +97,35 @@
 
     <h3>Thank you for your business!</h3>
 
+    <div class="receipt-actions">
     <button
         onclick="window.print()"
         class="print-button">
-        Print Receipt
+        🖨️ Print Receipt
     </button>
 
+    <button
+        onclick="window.print()"
+        class="download-button">
+        📥 Save Receipt as PDF
+    </button>
 </div>
 
+</div>
+<style>
+@media print {
+    .receipt-actions {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+    }
+
+    .page-card.receipt {
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+}
+</style>
 {% endblock %}
