@@ -12,12 +12,16 @@
         <h2>Daily</h2>
         <div class="price">UGX 2,000</div>
         <p>Access for 1 day</p>
-        <button type="button">Pay UGX 2,000</button>
+        <form method="POST" action="{{ url_for('pay_subscription', plan='daily') }}">
+    <button type="submit">Pay UGX 2,000</button>
+</form>
     </div>
 
     <div class="plan-card">
         <h2>Weekly</h2>
-        <div class="price">UGX 10,000</div>
+        <form method="POST" action="{{ url_for('pay_subscription', plan='weekly') }}">
+    <button type="submit">Pay UGX 10,000</button>
+</form>
         <p>Access for 7 days</p>
         <button type="button">Pay UGX 10,000</button>
     </div>
@@ -26,14 +30,18 @@
         <h2>Monthly</h2>
         <div class="price">UGX 30,000</div>
         <p>Access for 30 days</p>
-        <button type="button">Pay UGX 30,000</button>
+       <form method="POST" action="{{ url_for('pay_subscription', plan='monthly') }}">
+    <button type="submit">Pay UGX 30,000</button>
+</form>
     </div>
 
     <div class="plan-card">
         <h2>Yearly</h2>
         <div class="price">UGX 300,000</div>
         <p>Access for 365 days</p>
-        <button type="button">Pay UGX 300,000</button>
+        <form method="POST" action="{{ url_for('pay_subscription', plan='yearly') }}">
+    <button type="submit">Pay UGX 300,000</button>
+</form>
     </div>
 
 </div>
