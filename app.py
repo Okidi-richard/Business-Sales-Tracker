@@ -229,8 +229,13 @@ def dashboard():
 @app.route("/subscription")
 @login_required
 def subscription():
-    return render_template("subscription.html", user=current_user())
-    @app.route("/pay_subscription", methods=["POST"])
+    return render_template(
+        "subscription.html",
+        user=current_user()
+    )
+
+
+@app.route("/pay_subscription", methods=["POST"])
 @login_required
 def pay_subscription():
     plan = request.form.get("plan")
@@ -254,8 +259,8 @@ def pay_subscription():
     db.session.commit()
 
     flash("Subscription activated successfully.", "success")
-    return redirect(url_for("dashboard"))
 
+    return redirect(url_for("dashboard"))
 
 @app.route("/admin")
 @owner_required
