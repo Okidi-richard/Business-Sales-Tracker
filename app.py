@@ -251,17 +251,20 @@ def pay_subscription():
         flash("Invalid subscription plan.", "error")
         return redirect(url_for("subscription"))
 
-    days = plans[plan]
-
     user = current_user()
-    user.subscription_expires = datetime.utcnow() + timedelta(days=days)
+
+    user.subscription_expires = (
+        datetime.utcnow() + timedelta(days=plans[plan])
+    )
 
     db.session.commit()
 
-    flash("Subscription activated successfully.", "success")
+    flash(
+        f"Subscription activated successfully for {plan}.",
+        "success"
+    )
 
     return redirect(url_for("dashboard"))
-
 @app.route("/admin")
 @owner_required
 def admin():
