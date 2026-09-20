@@ -6,7 +6,23 @@
 
 <div class="page-card receipt">
 
-    <h1>SALES RECEIPT</h1>
+    <div class="receipt-header">
+    <h1>{{ user.business_name }}</h1>
+
+    {% if user.tagline %}
+        <p><strong>{{ user.tagline }}</strong></p>
+    {% endif %}
+
+    {% if user.address %}
+        <p>{{ user.address }}</p>
+    {% endif %}
+
+    {% if user.phone %}
+        <p>Tel: {{ user.phone }}</p>
+    {% endif %}
+
+    <h2>SALES RECEIPT</h2>
+</div>
 
     <hr>
 
