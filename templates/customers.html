@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+
+<h1>Customers</h1>
+
+<div class="page-card">
+
+    <h2>Add New Customer</h2>
+
+    <form method="POST">
+
+        <div class="form-group">
+            <label for="name">Customer Name</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter customer name"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input
+                type="text"
+                id="phone"
+                name="phone"
+                placeholder="Enter phone number"
+            >
+        </div>
+
+        <button type="submit" class="button">
+            Add Customer
+        </button>
+
+    </form>
+
+</div>
+
+
+<div class="page-card">
+
+    <h2>Customer List</h2>
+
+    {% if customers %}
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Customer Name</th>
+                <th>Phone</th>
+                <th>Balance Owing</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for customer in customers %}
+
+            <tr>
+
+                <td>{{ loop.index }}</td>
+
+                <td>
+                    {{ customer.name }}
+                </td>
+
+                <td>
+                    {{ customer.phone or "—" }}
+                </td>
+
+                <td>
+                    UGX {{ "{:,.0f}".format(balances.get(customer.id, 0)) }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+        <p>No customers have been added yet.</p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
