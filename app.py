@@ -173,6 +173,7 @@ def register():
     tagline=tagline,
     password_hash=generate_password_hash(password),
     role="owner" if first_account else "user",
+    subscription_expires=datetime.utcnow() + timedelta(days=3),
 )
         db.session.add(user)
         db.session.commit()
