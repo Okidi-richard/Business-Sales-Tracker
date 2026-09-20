@@ -141,11 +141,12 @@ async function saveReceiptPDF() {
     }
 
     try {
-        const canvas = await html2canvas(receipt, {
-            scale: 2,
-            backgroundColor: "#ffffff"
-        });
-
+const canvas = await html2canvas(receipt, {
+    scale: 2,
+    backgroundColor: "#ffffff",
+    ignoreElements: (element) =>
+        element.classList.contains("receipt-actions")
+});
         const { jsPDF } = window.jspdf;
 
         const pdf = new jsPDF({
