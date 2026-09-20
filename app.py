@@ -71,7 +71,8 @@ class SaleItem(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     quantity = db.Column(db.Float, nullable=False)
     unit_price = db.Column(db.Float, nullable=False)
-    buying_price = db.Column(db.Float, nullable=False)
+    buying_price = db.Column(db.Float, nullable=False)    
+    product = db.relationship("Product")
 
     @property
     def subtotal(self):
