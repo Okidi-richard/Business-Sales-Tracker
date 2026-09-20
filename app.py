@@ -24,7 +24,7 @@ class User(db.Model):
     phone = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=True)
     address = db.Column(db.String(250), nullable=True)
-tagline = db.Column(db.String(250), nullable=True)
+    tagline = db.Column(db.String(250), nullable=True)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), default="user")
     subscription_expires = db.Column(db.DateTime, nullable=True)
