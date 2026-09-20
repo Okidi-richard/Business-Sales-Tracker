@@ -230,6 +230,31 @@ def dashboard():
 @login_required
 def subscription():
     return render_template("subscription.html", user=current_user())
+    @app.route("/pay_subscription", methods=["POST"])
+@login_required
+def pay_subscription():
+    plan = request.form.get("plan")
+
+    plans = {
+        "daily": 1,
+        "weekly": 7,
+        "monthly": 30,
+        "yearly": 365
+    }
+
+    if plan not in plans:
+        flash("Invalid subscription plan.", "error")
+        return redirect(url_for("subscription"))
+
+    days = plans[plan]
+
+    user = current_user()
+    user.subscription_expires = datetime.utcnow() + timedelta(days=days)
+
+    db.session.commit()
+
+    flash("Subscription activated successfully.", "success")
+    return redirect(url_for("dashboard"))
 
 
 @app.route("/admin")
