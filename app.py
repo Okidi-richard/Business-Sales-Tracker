@@ -23,6 +23,8 @@ class User(db.Model):
     business_name = db.Column(db.String(150), nullable=False)
     phone = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=True)
+    address = db.Column(db.String(250), nullable=True)
+tagline = db.Column(db.String(250), nullable=True)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), default="user")
     subscription_expires = db.Column(db.DateTime, nullable=True)
@@ -146,6 +148,8 @@ def register():
         business_name = request.form.get("business_name", "").strip()
         phone = request.form.get("phone", "").strip()
         email = request.form.get("email", "").strip() or None
+        address = request.form.get("address", "").strip() or None
+        tagline = request.form.get("tagline", "").strip() or None
         password = request.form.get("password", "")
 
         if not name or not business_name or not phone or len(password) < 6:
@@ -161,13 +165,15 @@ def register():
         # The first account becomes the owner. Later accounts are normal users.
         first_account = User.query.count() == 0
         user = User(
-            name=name,
-            business_name=business_name,
-            phone=phone,
-            email=email,
-            password_hash=generate_password_hash(password),
-            role="owner" if first_account else "user",
-        )
+    name=name,
+    business_name=business_name,
+    phone=phone,
+    email=email,
+    address=address,
+    tagline=tagline,
+    password_hash=generate_password_hash(password),
+    role="owner" if first_account else "user",
+)
         db.session.add(user)
         db.session.commit()
         flash("Account created successfully. Please log in.", "success")
