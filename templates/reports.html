@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+
+<h1>Business Reports</h1>
+
+<div class="grid">
+
+    <div class="stat-card">
+        <h3>Total Sales</h3>
+        <p>UGX {{ "{:,.0f}".format(total_sales or 0) }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Expenses</h3>
+        <p>UGX {{ "{:,.0f}".format(total_expenses or 0) }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Profit</h3>
+        <p>UGX {{ "{:,.0f}".format(profit or 0) }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Customers Owing</h3>
+        <p>UGX {{ "{:,.0f}".format(customers_owing or 0) }}</p>
+    </div>
+
+</div>
+
+<div class="page-card">
+
+    <h2>Sales & Profit Summary</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Total Sales</td>
+                <td>UGX {{ "{:,.0f}".format(total_sales or 0) }}</td>
+            </tr>
+
+            <tr>
+                <td>Total Expenses</td>
+                <td>UGX {{ "{:,.0f}".format(total_expenses or 0) }}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Net Profit</strong></td>
+                <td>
+                    <strong>
+                        UGX {{ "{:,.0f}".format(profit or 0) }}
+                    </strong>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Customers Owing</td>
+                <td>UGX {{ "{:,.0f}".format(customers_owing or 0) }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="page-card">
+
+    <h2>Report Information</h2>
+
+    <p>
+        This report provides a summary of the business financial
+        performance, including sales, expenses, profit and customer debts.
+    </p>
+
+</div>
+
+{% endblock %}
