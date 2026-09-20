@@ -4,28 +4,26 @@
 
 {% block content %}
 
-<div class="receipt page-card">
+<div class="page-card receipt">
 
     <h1>SALES RECEIPT</h1>
 
     <hr>
 
     <p>
-        <strong>Receipt No:</strong>
-        {{ sale.id }}
+        <strong>Receipt No:</strong> {{ sale.id }}
     </p>
 
     <p>
-        <strong>Date:</strong>
-        {{ sale.created_at }}
+        <strong>Date:</strong> {{ sale.created_at }}
     </p>
 
     <hr>
 
     <p>
         <strong>Customer:</strong>
-        {% if sale.customer %}
-            {{ sale.customer.name }}
+        {% if customer %}
+            {{ customer.name }}
         {% else %}
             Walk-in Customer
         {% endif %}
@@ -33,105 +31,78 @@
 
     <hr>
 
-    <h3>Sale Details</h3>
+    <h2>Sale Details</h2>
 
-    <table style="width:100%; border-collapse:collapse; margin-top:15px;">
-
+    <table class="receipt-table">
         <thead>
             <tr>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">
-                    Product
-                </th>
-
-                <th style="text-align:center; border-bottom:1px solid #ddd; padding:8px;">
-                    Quantity
-                </th>
-
-                <th style="text-align:right; border-bottom:1px solid #ddd; padding:8px;">
-                    Amount
-                </th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Amount</th>
             </tr>
         </thead>
 
         <tbody>
+            {% for item in items %}
             <tr>
-                <td style="padding:8px;">
-                    {% if sale.product %}
-                        {{ sale.product.name }}
+
+                <td>
+                    {% if item.product %}
+                        {{ item.product.name }}
                     {% else %}
                         Product
                     {% endif %}
                 </td>
 
-                <td style="text-align:center; padding:8px;">
-                    {{ sale.quantity }}
+                <td>
+                    {{ item.quantity }}
                 </td>
 
-                <td style="text-align:right; padding:8px;">
-                    UGX {{ "{:,.0f}".format(sale.total or 0) }}
+                <td>
+                    UGX {{ "{:,.0f}".format(item.unit_price) }}
                 </td>
+
+                <td>
+                    UGX {{ "{:,.0f}".format(item.subtotal) }}
+                </td>
+
             </tr>
+            {% endfor %}
         </tbody>
-
     </table>
 
     <hr>
 
-    <p style="text-align:right;">
-        <strong>Amount Paid:</strong>
-        UGX {{ "{:,.0f}".format(sale.amount_paid or 0) }}
-    </p>
+    <div class="receipt-total">
 
-    <p style="text-align:right;">
-        <strong>Balance:</strong>
-        UGX {{ "{:,.0f}".format(sale.balance or 0) }}
-    </p>
+        <p>
+            <strong>Total:</strong>
+            UGX {{ "{:,.0f}".format(sale.total) }}
+        </p>
+
+        <p>
+            <strong>Amount Paid:</strong>
+            UGX {{ "{:,.0f}".format(sale.amount_paid) }}
+        </p>
+
+        <p>
+            <strong>Balance:</strong>
+            UGX {{ "{:,.0f}".format(sale.balance) }}
+        </p>
+
+    </div>
 
     <hr>
 
-    <h3 style="text-align:center;">
-        Thank you for your business!
-    </h3>
+    <h3>Thank you for your business!</h3>
 
-    <div style="text-align:center; margin-top:20px;">
-        <button onclick="window.print()" class="btn">
-            Print Receipt
-        </button>
-    </div>
+    <button
+        onclick="window.print()"
+        class="print-button">
+        Print Receipt
+    </button>
 
 </div>
-
-<style>
-    .receipt {
-        max-width: 700px;
-        margin: 30px auto;
-        padding: 30px;
-    }
-
-    .receipt h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .receipt table {
-        background: white;
-    }
-
-    @media print {
-        nav,
-        header,
-        footer,
-        .btn {
-            display: none !important;
-        }
-
-        .receipt {
-            width: 100%;
-            max-width: none;
-            margin: 0;
-            box-shadow: none;
-        }
-    }
-</style>
 
 {% endblock %}
