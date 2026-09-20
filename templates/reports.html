@@ -19,20 +19,20 @@
     </div>
 
     <div class="stat-card">
-        <h3>Profit</h3>
-        <p>UGX {{ "{:,.0f}".format(profit or 0) }}</p>
+        <h3>Net Profit</h3>
+        <p>UGX {{ "{:,.0f}".format(net_profit or 0) }}</p>
     </div>
 
     <div class="stat-card">
         <h3>Customers Owing</h3>
-        <p>UGX {{ "{:,.0f}".format(customers_owing or 0) }}</p>
+        <p>UGX {{ "{:,.0f}".format(total_owing or 0) }}</p>
     </div>
 
 </div>
 
 <div class="page-card">
 
-    <h2>Sales & Profit Summary</h2>
+    <h2>Financial Summary</h2>
 
     <table>
         <thead>
@@ -43,31 +43,38 @@
         </thead>
 
         <tbody>
+
             <tr>
                 <td>Total Sales</td>
-                <td>UGX {{ "{:,.0f}".format(total_sales or 0) }}</td>
+                <td>
+                    UGX {{ "{:,.0f}".format(total_sales or 0) }}
+                </td>
             </tr>
 
             <tr>
                 <td>Total Expenses</td>
-                <td>UGX {{ "{:,.0f}".format(total_expenses or 0) }}</td>
+                <td>
+                    UGX {{ "{:,.0f}".format(total_expenses or 0) }}
+                </td>
             </tr>
 
             <tr>
                 <td><strong>Net Profit</strong></td>
                 <td>
                     <strong>
-                        UGX {{ "{:,.0f}".format(profit or 0) }}
+                        UGX {{ "{:,.0f}".format(net_profit or 0) }}
                     </strong>
                 </td>
             </tr>
 
             <tr>
                 <td>Customers Owing</td>
-                <td>UGX {{ "{:,.0f}".format(customers_owing or 0) }}</td>
+                <td>
+                    UGX {{ "{:,.0f}".format(total_owing or 0) }}
+                </td>
             </tr>
-        </tbody>
 
+        </tbody>
     </table>
 
 </div>
@@ -77,8 +84,8 @@
     <h2>Report Information</h2>
 
     <p>
-        This report provides a summary of the business financial
-        performance, including sales, expenses, profit and customer debts.
+        This report summarizes the financial performance of your business,
+        including sales, expenses, net profit and customer balances.
     </p>
 
 </div>
