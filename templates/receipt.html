@@ -140,13 +140,19 @@ async function saveReceiptPDF() {
         return;
     }
 
+    const actions = receipt.querySelector(".receipt-actions");
+
     try {
-const canvas = await html2canvas(receipt, {
-    scale: 2,
-    backgroundColor: "#ffffff",
-    ignoreElements: (element) =>
-        element.classList.contains("receipt-actions")
-});
+        // Hide Print and Save PDF buttons temporarily
+        if (actions) {
+            actions.style.display = "none";
+        }
+
+        const canvas = await html2canvas(receipt, {
+            scale: 2,
+            backgroundColor: "#ffffff"
+        });
+
         const { jsPDF } = window.jspdf;
 
         const pdf = new jsPDF({
@@ -176,6 +182,12 @@ const canvas = await html2canvas(receipt, {
     } catch (error) {
         console.error(error);
         alert("Unable to create the PDF. Please try again.");
+
+    } finally {
+        // Show the buttons again on the webpage
+        if (actions) {
+            actions.style.display = "";
+        }
     }
 }
 </script>
