@@ -235,11 +235,10 @@ def subscription():
     )
 
 
-@app.route("/pay_subscription", methods=["POST"])
+@app.route("/pay_subscription", methods=["GET", "POST"])
 @login_required
 def pay_subscription():
-    plan = request.form.get("plan")
-
+    plan = request.form.get("plan") or request.args.get("plan")
     plans = {
         "daily": 1,
         "weekly": 7,
