@@ -1,47 +1,66 @@
-<div class="subscription-plans">
+{% extends "base.html" %}
 
-    <div class="plan-card">
-        <h2>Daily</h2>
-        <div class="price">UGX 2,000</div>
-        <p>Access for 1 day</p>
+{% block title %}Subscription{% endblock %}
 
-        <form method="POST" action="/pay_subscription">
-            <input type="hidden" name="plan" value="daily">
-            <button type="submit">Pay UGX 2,000</button>
-        </form>
-    </div>
+{% block content %}
 
-    <div class="plan-card">
-        <h2>Weekly</h2>
-        <div class="price">UGX 10,000</div>
-        <p>Access for 7 days</p>
+<div class="page-card">
 
-        <form method="POST" action="/pay_subscription">
-            <input type="hidden" name="plan" value="weekly">
-            <button type="submit">Pay UGX 10,000</button>
-        </form>
-    </div>
+    <h1>Choose Your Subscription</h1>
 
-    <div class="plan-card">
-        <h2>Monthly</h2>
-        <div class="price">UGX 30,000</div>
-        <p>Access for 30 days</p>
+    <p>Select a plan that suits your business.</p>
 
-        <form method="POST" action="/pay_subscription">
-            <input type="hidden" name="plan" value="monthly">
-            <button type="submit">Pay UGX 30,000</button>
-        </form>
-    </div>
+    <div class="subscription-plans">
 
-    <div class="plan-card">
-        <h2>Yearly</h2>
-        <div class="price">UGX 300,000</div>
-        <p>Access for 365 days</p>
+        <div class="plan-card">
+            <h2>Daily</h2>
+            <div class="price">UGX 2,000</div>
+            <p>Access for 1 day</p>
 
-        <form method="POST" action="/pay_subscription">
-            <input type="hidden" name="plan" value="yearly">
-            <button type="submit">Pay UGX 300,000</button>
-        </form>
+            <form method="POST" action="{{ url_for('pay_subscription') }}">
+                <input type="hidden" name="plan" value="daily">
+                <button type="submit">Pay UGX 2,000</button>
+            </form>
+        </div>
+
+
+        <div class="plan-card">
+            <h2>Weekly</h2>
+            <div class="price">UGX 10,000</div>
+            <p>Access for 7 days</p>
+
+            <form method="POST" action="{{ url_for('pay_subscription') }}">
+                <input type="hidden" name="plan" value="weekly">
+                <button type="submit">Pay UGX 10,000</button>
+            </form>
+        </div>
+
+
+        <div class="plan-card">
+            <h2>Monthly</h2>
+            <div class="price">UGX 30,000</div>
+            <p>Access for 30 days</p>
+
+            <form method="POST" action="{{ url_for('pay_subscription') }}">
+                <input type="hidden" name="plan" value="monthly">
+                <button type="submit">Pay UGX 30,000</button>
+            </form>
+        </div>
+
+
+        <div class="plan-card">
+            <h2>Yearly</h2>
+            <div class="price">UGX 300,000</div>
+            <p>Access for 365 days</p>
+
+            <form method="POST" action="{{ url_for('pay_subscription') }}">
+                <input type="hidden" name="plan" value="yearly">
+                <button type="submit">Pay UGX 300,000</button>
+            </form>
+        </div>
+
     </div>
 
 </div>
+
+{% endblock %}
