@@ -20,7 +20,7 @@
 
     <div class="subscription-plans">
 
-        <form action="{{ url_for('pay_subscription') }}" method="POST">
+        <form action="/pay_subscription" method="POST">
             <input type="hidden" name="plan" value="daily">
             <button type="submit">
                 Daily Subscription
