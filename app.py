@@ -97,6 +97,25 @@ class Expense(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    plan = db.Column(db.String(20), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    currency = db.Column(db.String(10), default="UGX")
+    merchant_reference = db.Column(db.String(100), unique=True, nullable=False)
+    tracking_id = db.Column(db.String(100), nullable=True)
+    status = db.Column(db.String(20), default="PENDING")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+
+
+
+
+
+
+
 def current_user():
     uid = session.get("user_id")
     return db.session.get(User, uid) if uid else None
@@ -261,6 +280,33 @@ def pesapal_get_token():
 
     data = response.json()
     return data["token"]
+
+    def pesapal_register_ipn():
+    token = pesapal_get_token()
+
+    url = f"{PESAPAL_BASE_URL}/api/URLSetup/RegisterIPN"
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+
+    payload = {
+        "url": "https://business-sales-tracker.onrender.com/pesapal/ipn",
+        "ipn_notification_type": "GET"
+    }
+
+    response = requests.post(
+        url,
+        json=payload,
+        headers=headers,
+        timeout=30
+    )
+
+    response.raise_for_status()
+
+    return response.json()
 
 @app.route("/pay_subscription", methods=["GET", "POST"])
 @login_required
