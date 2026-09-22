@@ -282,7 +282,7 @@ def pesapal_get_token():
     return data["token"]
 
     def pesapal_register_ipn():
-    token = pesapal_get_token()
+        token = pesapal_get_token()
 
     url = f"{PESAPAL_BASE_URL}/api/URLSetup/RegisterIPN"
 
