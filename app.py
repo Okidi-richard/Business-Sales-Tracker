@@ -10,6 +10,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-secret-key")
+PESAPAL_BASE_URL = os.environ.get("PESAPAL_BASE_URL", "https://pay.pesapal.com/v3")
+PESAPAL_CONSUMER_KEY = os.environ.get("PESAPAL_CONSUMER_KEY")
+PESAPAL_CONSUMER_SECRET = os.environ.get("PESAPAL_CONSUMER_SECRET")
 database_url = os.environ.get("DATABASE_URL", "sqlite:///sales_tracker.db")
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
