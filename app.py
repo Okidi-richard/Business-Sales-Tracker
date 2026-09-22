@@ -268,6 +268,10 @@ def pay_subscription():
     )
 
     return redirect(url_for("dashboard"))
+@app.route("/pesapal/ipn", methods=["GET", "POST"])
+def pesapal_ipn():
+    return "OK", 200
+
 @app.route("/admin")
 @owner_required
 def admin():
