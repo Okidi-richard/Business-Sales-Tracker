@@ -256,6 +256,115 @@ def subscription():
         "subscription.html",
         user=current_user()
     )
+
+@app.route("/pay_subscription", methods=["POST"])
+@login_required
+def pay_subscription():
+    plans = {
+        "daily": {"amount": 2000, "days": 1},
+        "weekly": {"amount": 10000, "days": 7},
+        "monthly": {"amount": 30000, "days": 30},
+        "yearly": {"amount": 300000, "days": 365},
+    }
+
+    plan = request.form.get("plan")
+
+    if plan not in plans:
+        flash("Invalid subscription plan.", "error")
+        return redirect(url_for("subscription"))
+
+    user = current_user()
+
+    merchant_reference = (
+        f"BST-{user.id}-{int(datetime.now().timestamp())}"
+    )
+
+    try:
+        token = pesapal_get_token()
+
+        ipn_response = pesapal_register_ipn()
+
+        if isinstance(ipn_response, dict):
+            ipn_id = ipn_response.get("ipn_id")
+        else:
+            ipn_id = None
+
+        if not ipn_id:
+            flash("Unable to register the Pesapal notification URL.", "error")
+            return redirect(url_for("subscription"))
+
+        payment = Payment(
+            user_id=user.id,
+            plan=plan,
+            amount=plans[plan]["amount"],
+            currency="UGX",
+            merchant_reference=merchant_reference,
+            status="PENDING"
+        )
+
+        db.session.add(payment)
+        db.session.commit()
+
+        url = f"{PESAPAL_BASE_URL}/api/Transactions/SubmitOrderRequest"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}"
+        }
+
+        payload = {
+            "id": merchant_reference,
+            "currency": "UGX",
+            "amount": plans[plan]["amount"],
+            "description": f"Business Sales Tracker - {plan} subscription",
+            "callback_url": url_for(
+                "pesapal_callback",
+                _external=True
+            ),
+            "notification_id": ipn_id,
+            "billing_address": {
+                "email_address": user.email or "",
+                "phone_number": user.phone or "",
+                "first_name": user.name or "",
+                "last_name": ""
+            }
+        }
+
+        response = requests.post(
+            url,
+            json=payload,
+            headers=headers,
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        redirect_url = data.get("redirect_url")
+        tracking_id = data.get("order_tracking_id")
+
+        if tracking_id:
+            payment.tracking_id = tracking_id
+            db.session.commit()
+
+        if not redirect_url:
+            flash(
+                "Pesapal did not return a payment page.",
+                "error"
+            )
+            return redirect(url_for("subscription"))
+
+        return redirect(redirect_url)
+
+    except Exception as e:
+        db.session.rollback()
+        flash(
+            f"Payment could not be started: {str(e)}",
+            "error"
+        )
+        return redirect(url_for("subscription"))
 def pesapal_get_token():
     url = f"{PESAPAL_BASE_URL}/api/Auth/RequestToken"
 
@@ -308,37 +417,35 @@ def pesapal_get_token():
 
     return response.json()
 
-@app.route("/pay_subscription", methods=["GET", "POST"])
+@app.route("/pesapal/callback")
 @login_required
-def pay_subscription():
-    plan = request.form.get("plan") or request.args.get("plan")
-    plans = {
-        "daily": 1,
-        "weekly": 7,
-        "monthly": 30,
-        "yearly": 365
-    }
+def pesapal_callback():
+    order_tracking_id = request.args.get("OrderTrackingId")
+    merchant_reference = request.args.get("OrderMerchantReference")
 
-    if plan not in plans:
-        flash("Invalid subscription plan.", "error")
+    if not order_tracking_id:
+        flash("Payment tracking information was not received.", "error")
         return redirect(url_for("subscription"))
 
-    user = current_user()
+    payment = Payment.query.filter_by(
+        tracking_id=order_tracking_id
+    ).first()
 
-    user.subscription_expires = (
-        datetime.utcnow() + timedelta(days=plans[plan])
-    )
+    if not payment and merchant_reference:
+        payment = Payment.query.filter_by(
+            merchant_reference=merchant_reference
+        ).first()
 
-    db.session.commit()
+    if not payment:
+        flash("Payment record could not be found.", "error")
+        return redirect(url_for("subscription"))
 
     flash(
-        f"Subscription activated successfully for {plan}.",
+        "Payment has been received and is being verified.",
         "success"
     )
 
     return redirect(url_for("dashboard"))
-@app.route("/pesapal/ipn", methods=["GET", "POST"])
-def pesapal_ipn():
     return "OK", 200
 
 @app.route("/admin")
