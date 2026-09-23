@@ -417,7 +417,6 @@ def pesapal_register_ipn():
 
     return response.json()
 @app.route("/pesapal/callback")
-@login_required
 def pesapal_callback():
     order_tracking_id = request.args.get("OrderTrackingId")
     merchant_reference = request.args.get("OrderMerchantReference")
