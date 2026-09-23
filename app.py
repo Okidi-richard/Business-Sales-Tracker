@@ -257,8 +257,7 @@ def subscription():
         user=current_user()
     )
 
-@app.route("/pay_subscription", methods=["POST"])
-@login_required
+
 @app.route("/pay_subscription", methods=["GET", "POST"])
 @login_required
 def pay_subscription():
