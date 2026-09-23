@@ -456,8 +456,13 @@ def pesapal_callback():
 @owner_required
 def admin():
     users = User.query.order_by(User.created_at.desc()).all()
-    return render_template("admin.html", user=current_user(), users=users)
-
+    payments = Payment.query.order_by(Payment.created_at.desc()).all()
+    return render_template(
+        "admin.html",
+        user=current_user,
+        users=users,
+        payments=payments
+    )
 
 @app.route("/admin/activate-subscription/<int:user_id>", methods=["POST"])
 @owner_required
