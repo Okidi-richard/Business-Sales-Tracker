@@ -391,7 +391,7 @@ def pesapal_get_token():
     return data["token"]
 
 def pesapal_register_ipn():
-        token = pesapal_get_token()
+    token = pesapal_get_token()
 
     url = f"{PESAPAL_BASE_URL}/api/URLSetup/RegisterIPN"
 
@@ -416,7 +416,6 @@ def pesapal_register_ipn():
     response.raise_for_status()
 
     return response.json()
-
 @app.route("/pesapal/callback")
 @login_required
 def pesapal_callback():
