@@ -259,6 +259,8 @@ def subscription():
 
 @app.route("/pay_subscription", methods=["POST"])
 @login_required
+@app.route("/pay_subscription", methods=["GET", "POST"])
+@login_required
 def pay_subscription():
     plans = {
         "daily": {"amount": 2000, "days": 1},
@@ -342,28 +344,30 @@ def pay_subscription():
 
         data = response.json()
 
-        redirect_url = data.get("redirect_url")
         tracking_id = data.get("order_tracking_id")
+        redirect_url = data.get("redirect_url")
 
-        if tracking_id:
-            payment.tracking_id = tracking_id
-            db.session.commit()
-
-        if not redirect_url:
+        if not tracking_id or not redirect_url:
+            db.session.rollback()
             flash(
-                "Pesapal did not return a payment page.",
+                "Pesapal did not return a valid payment link.",
                 "error"
             )
             return redirect(url_for("subscription"))
+
+        payment.tracking_id = tracking_id
+        db.session.commit()
 
         return redirect(redirect_url)
 
     except Exception as e:
         db.session.rollback()
+
         flash(
             f"Payment could not be started: {str(e)}",
             "error"
         )
+
         return redirect(url_for("subscription"))
 def pesapal_get_token():
     url = f"{PESAPAL_BASE_URL}/api/Auth/RequestToken"
