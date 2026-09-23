@@ -416,6 +416,9 @@ def pesapal_register_ipn():
     response.raise_for_status()
 
     return response.json()
+@app.route("/pesapal/ipn", methods=["GET", "POST"])
+def pesapal_ipn():
+    return "OK", 200
 @app.route("/pesapal/callback")
 def pesapal_callback():
     order_tracking_id = request.args.get("OrderTrackingId")
