@@ -596,8 +596,7 @@ def deactivate_subscription(user_id):
         "success"
     )
 
-   return redirect(url_for("admin"))
-
+return redirect(url_for("admin"))
 @app.route("/products", methods=["GET", "POST"])
 @subscription_required
 def products():
