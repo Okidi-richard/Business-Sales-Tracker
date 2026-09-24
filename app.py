@@ -229,6 +229,7 @@ def logout():
 
 @app.route("/dashboard")
 @login_required
+@subscription_required
 def dashboard():
     user = current_user()
     today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
