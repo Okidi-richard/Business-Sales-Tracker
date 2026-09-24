@@ -421,7 +421,78 @@ def pesapal_register_ipn():
     return response.json()
 @app.route("/pesapal/ipn", methods=["GET", "POST"])
 def pesapal_ipn():
-    return "OK", 200
+    order_tracking_id = request.args.get("OrderTrackingId")
+
+    if not order_tracking_id:
+        return "OK", 200
+
+    try:
+        token = pesapal_get_token()
+
+        url = f"{PESAPAL_BASE_URL}/api/Transactions/GetTransactionStatus"
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {token}"
+        }
+
+        response = requests.get(
+            url,
+            params={"orderTrackingId": order_tracking_id},
+            headers=headers,
+            timeout=30
+        )
+
+        response.raise_for_status()
+        data = response.json()
+
+        status_code = data.get("status_code")
+
+        payment = Payment.query.filter_by(
+            tracking_id=order_tracking_id
+        ).first()
+
+        if not payment:
+            return "OK", 200
+
+        if status_code == 1:
+            payment.status = "COMPLETED"
+
+            plan_days = {
+                "daily": 1,
+                "weekly": 7,
+                "monthly": 30,
+                "yearly": 365
+            }
+
+            days = plan_days.get(payment.plan)
+
+            if days:
+                user = payment.user
+
+                base = (
+                    user.subscription_expires
+                    if user.subscription_active()
+                    else datetime.utcnow()
+                )
+
+                user.subscription_expires = base + timedelta(days=days)
+
+            db.session.commit()
+
+        elif status_code == 2:
+            payment.status = "FAILED"
+            db.session.commit()
+
+        elif status_code == 3:
+            payment.status = "REVERSED"
+            db.session.commit()
+
+        return "OK", 200
+
+    except Exception:
+        db.session.rollback()
+        return "OK", 200
 @app.route("/pesapal/callback")
 def pesapal_callback():
     order_tracking_id = request.args.get("OrderTrackingId")
