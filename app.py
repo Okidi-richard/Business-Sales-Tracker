@@ -468,15 +468,38 @@ def admin():
 @owner_required
 def activate_subscription(user_id):
     target_user = db.session.get(User, user_id)
+
     if not target_user:
         flash("User not found.", "error")
         return redirect(url_for("admin"))
-    base = target_user.subscription_expires if target_user.subscription_active() else datetime.utcnow()
-    target_user.subscription_expires = base + timedelta(days=30)
-    db.session.commit()
-    flash(f"Subscription activated for {target_user.name} for 30 days.", "success")
-    return redirect(url_for("admin"))
 
+    plan = request.form.get("plan", "monthly")
+
+    plans = {
+        "daily": 1,
+        "weekly": 7,
+        "monthly": 30,
+        "yearly": 365
+    }
+
+    days = plans.get(plan, 30)
+
+    base = (
+        target_user.subscription_expires
+        if target_user.subscription_active()
+        else datetime.utcnow()
+    )
+
+    target_user.subscription_expires = base + timedelta(days=days)
+
+    db.session.commit()
+
+    flash(
+        f"Subscription activated for {target_user.name} for {days} days.",
+        "success"
+    )
+
+    return redirect(url_for("admin"))
 
 @app.route("/products", methods=["GET", "POST"])
 @subscription_required
