@@ -13,7 +13,7 @@
   <div class="navlinks">
     <a href="{{ url_for('dashboard') }}">Dashboard</a>
     <a href="{{ url_for('subscription') }}">Subscription</a>
-    {% if session.get("role") == "admin" %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+    {% if session.get("role") in ("owner", "admin") %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
     <a href="{{ url_for('logout') }}">Logout</a>
   </div>
   {% endif %}
