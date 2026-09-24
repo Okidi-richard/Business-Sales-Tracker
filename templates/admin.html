@@ -52,4 +52,44 @@
     </table>
 </div>
 
+<h2>Payment Transactions</h2>
+
+<div class="table-wrap">
+    <table>
+        <tr>
+            <th>Business</th>
+            <th>Plan</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Status</th>
+            <th>Merchant Reference</th>
+            <th>Tracking ID</th>
+            <th>Date</th>
+        </tr>
+
+        {% for payment in payments %}
+        <tr>
+            <td>
+                {% if payment.user %}
+                    {{ payment.user.business_name }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>{{ payment.plan }}</td>
+            <td>{{ payment.amount }}</td>
+            <td>{{ payment.currency }}</td>
+            <td>{{ payment.status }}</td>
+            <td>{{ payment.merchant_reference }}</td>
+            <td>{{ payment.tracking_id or "-" }}</td>
+            <td>{{ payment.created_at.strftime('%d %b %Y %H:%M') }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="8">No payment transactions yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
 {% endblock %}
