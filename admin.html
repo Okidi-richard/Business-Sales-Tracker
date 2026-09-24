@@ -4,121 +4,195 @@
 
 {% block content %}
 
-<h1>Owner Panel</h1>
+<div class="page-card">
 
-<p>
-    Registered accounts:
-    <strong>{{ users|length }}</strong>
-</p>
+    <h1>Owner / Admin Panel</h1>
 
-<div class="table-wrap">
-    <table>
-        <tr>
-            <th>Business</th>
-            <th>Owner</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Subscription</th>
-            <th>Action</th>
-        </tr>
+    <p>
+        <strong>Registered Businesses:</strong>
+        {{ users|length }}
+    </p>
 
-        {% for u in users %}
-        <tr>
-            <td>{{ u.business_name }}</td>
-            <td>{{ u.name }}</td>
-            <td>{{ u.phone }}</td>
-            <td>{{ u.role }}</td>
-            <td>
-                {% if u.subscription_active() %}
-                    Active
-                {% else %}
-                    Inactive
-                {% endif %}
-            </td>
-            <td>
-                {% if u.role != "owner" %}
-                    <form method="POST"
-                          action="{{ url_for('activate_subscription', user_id=u.id) }}">
-                        <button type="submit">Activate</button>
-                    </form>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 </div>
 
 
 <div class="page-card">
-    <h2>Subscription Price</h2>
 
-    <p>
-        <strong>UGX 10,000 / month</strong>
-    </p>
+    <h2>Subscription Management</h2>
 
-    <p class="muted">
-        This version uses owner-controlled subscription activation.
-    </p>
-</div>
+    {% if users %}
 
+    <div class="table-wrap">
 
-<hr>
+        <table>
 
-<h2>Payment Transactions</h2>
+            <thead>
+                <tr>
+                    <th>Business</th>
+                    <th>Owner</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Subscription</th>
+                    <th>Expiry Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
-{% if payments %}
+            <tbody>
 
-<div class="table-wrap">
-    <table>
-        <tr>
-            <th>Business/User</th>
-            <th>Plan</th>
-            <th>Amount</th>
-            <th>Currency</th>
-            <th>Status</th>
-            <th>Merchant Reference</th>
-            <th>Tracking ID</th>
-            <th>Date</th>
-        </tr>
-
-        {% for payment in payments %}
-        <tr>
-            <td>
                 {% for u in users %}
-                    {% if u.id == payment.user_id %}
+
+                <tr>
+
+                    <td>
                         {{ u.business_name }}
-                    {% endif %}
+                    </td>
+
+                    <td>
+                        {{ u.name }}
+                    </td>
+
+                    <td>
+                        {{ u.phone }}
+                    </td>
+
+                    <td>
+                        {{ u.role }}
+                    </td>
+
+                    <td>
+
+                        {% if u.subscription_active() %}
+                            <strong>ACTIVE</strong>
+                        {% else %}
+                            <strong>EXPIRED / INACTIVE</strong>
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if u.subscription_expires %}
+                            {{ u.subscription_expires }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('activate_subscription', user_id=u.id) }}"
+                        >
+
+                            <button type="submit">
+                                Activate / Extend 30 Days
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
                 {% endfor %}
-            </td>
 
-            <td>{{ payment.plan }}</td>
+            </tbody>
 
-            <td>
-                {{ "{:,.0f}".format(payment.amount) }}
-            </td>
+        </table>
 
-            <td>{{ payment.currency }}</td>
+    </div>
 
-            <td>{{ payment.status }}</td>
+    {% else %}
 
-            <td>{{ payment.merchant_reference }}</td>
+        <p>No registered businesses found.</p>
 
-            <td>
-                {{ payment.tracking_id or "—" }}
-            </td>
+    {% endif %}
 
-            <td>
-                {{ payment.created_at }}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 </div>
 
-{% else %}
 
-<p>No payment transactions recorded yet.</p>
+<div class="page-card">
 
-{% endif %}
+    <h2>Payment Transactions</h2>
+
+    {% if payments %}
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Business</th>
+                    <th>Plan</th>
+                    <th>Amount</th>
+                    <th>Currency</th>
+                    <th>Status</th>
+                    <th>Merchant Reference</th>
+                    <th>Tracking ID</th>
+                    <th>Date</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for payment in payments %}
+
+                <tr>
+
+                    <td>
+                        {{ payment.user.business_name if payment.user else "-" }}
+                    </td>
+
+                    <td>
+                        {{ payment.plan }}
+                    </td>
+
+                    <td>
+                        UGX {{ payment.amount }}
+                    </td>
+
+                    <td>
+                        {{ payment.currency }}
+                    </td>
+
+                    <td>
+                        {{ payment.status }}
+                    </td>
+
+                    <td>
+                        {{ payment.merchant_reference }}
+                    </td>
+
+                    <td>
+                        {{ payment.tracking_id or "-" }}
+                    </td>
+
+                    <td>
+                        {{ payment.created_at }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+        <p>No payment transactions recorded yet.</p>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
