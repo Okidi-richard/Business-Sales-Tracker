@@ -457,13 +457,20 @@ def pesapal_callback():
 def admin():
     users = User.query.order_by(User.created_at.desc()).all()
     payments = Payment.query.order_by(Payment.created_at.desc()).all()
+
+    active_users = sum(1 for u in users if u.subscription_active())
+    expired_users = len(users) - active_users
+
     return render_template(
         "admin.html",
         user=current_user,
         users=users,
-        payments=payments
+        payments=payments,
+        total_users=len(users),
+        active_users=active_users,
+        expired_users=expired_users,
+        total_payments=len(payments)
     )
-
 @app.route("/admin/activate-subscription/<int:user_id>", methods=["POST"])
 @owner_required
 def activate_subscription(user_id):
