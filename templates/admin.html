@@ -38,14 +38,23 @@
                 {% endif %}
             </td>
 
-            <td>
-                <form method="POST"
-                      action="{{ url_for('activate_subscription', user_id=u.id) }}">
-                    <button type="submit">
-                        Activate 30 Days
-                    </button>
-                </form>
-            </td>
+           <td>
+    <form method="POST"
+          action="{{ url_for('activate_subscription', user_id=u.id) }}">
+
+        <select name="plan">
+            <option value="daily">Daily - 1 Day</option>
+            <option value="weekly">Weekly - 7 Days</option>
+            <option value="monthly" selected>Monthly - 30 Days</option>
+            <option value="yearly">Yearly - 365 Days</option>
+        </select>
+
+        <button type="submit">
+            Activate
+        </button>
+
+    </form>
+</td>
         </tr>
         {% endfor %}
 
