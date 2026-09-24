@@ -26,6 +26,7 @@
             <th>Phone</th>
             <th>Role</th>
             <th>Subscription</th>
+<th>Status</th>
             <th>Action</th>
         </tr>
 
@@ -43,6 +44,14 @@
                     Not active
                 {% endif %}
             </td>
+            
+    <td>
+    {% if u.subscription_active() %}
+        Active
+    {% else %}
+        Expired
+    {% endif %}
+</td>
 
            <td>
     <form method="POST"
