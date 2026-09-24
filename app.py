@@ -501,7 +501,24 @@ def activate_subscription(user_id):
 
     return redirect(url_for("admin"))
 
-@app.route("/products", methods=["GET", "POST"])
+@app.route("/admin/deactivate-subscription/<int:user_id>", methods=["POST"])
+@owner_required
+def deactivate_subscription(user_id):
+    target_user = db.session.get(User, user_id)
+
+    if not target_user:
+        flash("User not found.", "error")
+        return redirect(url_for("admin"))
+
+    target_user.subscription_expires = datetime.utcnow()
+    db.session.commit()
+
+    flash(
+        f"Subscription deactivated for {target_user.name}.",
+        "success"
+    )
+
+    return redirect(url_for("admin"))@app.route("/products", methods=["GET", "POST"])
 @subscription_required
 def products():
     user = current_user()
