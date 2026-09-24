@@ -9,8 +9,27 @@
 <p>
     Manage and monitor registered businesses, subscriptions and payments.
 </p>
-<div class="admin-summary">
-    <div>
+<div class="admin-summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:20px 0;">
+    <div style="background:white;padding:20px;border-radius:10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+        <strong style="display:block;font-size:28px;">{{ total_users }}</strong>
+        <span>Total Businesses</span>
+    </div>
+
+    <div style="background:white;padding:20px;border-radius:10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+        <strong style="display:block;font-size:28px;">{{ active_users }}</strong>
+        <span>Active Subscriptions</span>
+    </div>
+
+    <div style="background:white;padding:20px;border-radius:10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+        <strong style="display:block;font-size:28px;">{{ expired_users }}</strong>
+        <span>Expired Subscriptions</span>
+    </div>
+
+    <div style="background:white;padding:20px;border-radius:10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+        <strong style="display:block;font-size:28px;">{{ total_payments }}</strong>
+        <span>Payment Records</span>
+    </div>
+</div>
         <strong>{{ total_users }}</strong>
         <span>Total Businesses</span>
     </div>
