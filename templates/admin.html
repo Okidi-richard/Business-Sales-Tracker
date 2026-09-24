@@ -46,7 +46,8 @@
 
            <td>
     <form method="POST"
-          action="{{ url_for('activate_subscription', user_id=u.id) }}">
+          action="{{ url_for('activate_subscription', user_id=u.id) }}"
+          style="display:inline;">
 
         <select name="plan">
             <option value="daily">Daily - 1 Day</option>
@@ -58,7 +59,16 @@
         <button type="submit">
             Activate
         </button>
+    </form>
 
+    <form method="POST"
+          action="{{ url_for('deactivate_subscription', user_id=u.id) }}"
+          style="display:inline; margin-left:5px;">
+
+        <button type="submit"
+                onclick="return confirm('Deactivate this subscription?');">
+            Deactivate
+        </button>
     </form>
 </td>
         </tr>
