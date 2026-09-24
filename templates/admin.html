@@ -10,7 +10,13 @@
     Manage and monitor registered businesses, subscriptions and payments.
 </p>
 
-<p>Registered businesses: <strong>{{ users|length }}</strong></p>
+<div>
+    <strong>Registered businesses:</strong> {{ users|length }}
+</div>
+
+<div>
+    <strong>Payment records:</strong> {{ payments|length }}
+</div>
 
 <div class="table-wrap">
     <table>
