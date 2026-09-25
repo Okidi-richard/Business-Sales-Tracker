@@ -4,7 +4,8 @@
 
 {% block content %}
 
-<h1>Business Reports</h1>
+<h1>Financial & Business Report</h1>
+<p>Track sales, collections, expenses, profit and outstanding customer balances.</p>
 
 <div class="grid">
 
@@ -27,7 +28,10 @@
         <h3>Customers Owing</h3>
         <p>UGX {{ "{:,.0f}".format(total_owing or 0) }}</p>
     </div>
-
+<div class="stat-card">
+    <h3>Total Received</h3>
+    <p>UGX {{ "{:,.0f}".format(total_received or 0) }}</p>
+</div>
 </div>
 
 <div class="page-card">
