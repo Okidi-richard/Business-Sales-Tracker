@@ -710,23 +710,27 @@ def receipt(sale_id):
     customer = db.session.get(Customer, sale.customer_id) if sale.customer_id else None
     return render_template("receipt.html", sale=sale, items=items, customer=customer, user=user)
 
-
 @app.route("/reports")
 @subscription_required
 def reports():
     user = current_user()
     sales = Sale.query.filter_by(user_id=user.id).order_by(Sale.created_at.desc()).all()
     items = SaleItem.query.join(Sale).filter(Sale.user_id == user.id).all()
+
     total_sales = sum(s.total for s in sales)
     total_profit = sum(i.profit for i in items)
     total_expenses = db.session.query(func.coalesce(func.sum(Expense.amount), 0)).filter(Expense.user_id == user.id).scalar() or 0
     total_owing = sum(s.balance for s in sales)
+    total_received = sum(s.amount_paid for s in sales)
+
+    net_profit = total_profit - total_expenses
+    profit_margin = (net_profit / total_sales * 100) if total_sales else 0
+
     return render_template("reports.html", user=user, total_sales=total_sales,
-                           total_profit=total_profit, total_expenses=total_expenses,
-                           net_profit=total_profit-total_expenses, total_owing=total_owing,
-                           sales=sales[:50])
-
-
+        total_received=total_received, total_profit=total_profit,
+        total_expenses=total_expenses, net_profit=net_profit,
+        profit_margin=profit_margin, total_owing=total_owing,
+        sales=sales[:50])
 with app.app_context():
     db.create_all()
     # Repair the current prototype: if no owner/admin exists, make the oldest account the owner.
