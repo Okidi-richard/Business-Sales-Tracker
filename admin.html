@@ -68,15 +68,23 @@
                         {{ u.role }}
                     </td>
 
-                    <td>
+                   <td>
 
-                        {% if u.subscription_active() %}
-                            <strong>ACTIVE</strong>
-                        {% else %}
-                            <strong>EXPIRED / INACTIVE</strong>
-                        {% endif %}
+    {% if u.subscription_active() %}
+        <strong>ACTIVE</strong>
+    {% else %}
+        <strong>EXPIRED / INACTIVE</strong>
+    {% endif %}
 
-                    </td>
+    <br>
+
+    {% if u.subscription_expires %}
+        <small>
+            Until: {{ u.subscription_expires }}
+        </small>
+    {% endif %}
+
+</td>
 
                     <td>
 
