@@ -1,0 +1,10 @@
+{
+  "name": "Business Sales Tracker",
+  "short_name": "Sales Tracker",
+  "description": "Business Sales Tracker for managing sales, products, expenses and reports.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "orientation": "portrait"
+}
