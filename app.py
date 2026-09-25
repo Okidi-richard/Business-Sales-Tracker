@@ -579,7 +579,7 @@ def activate_subscription(user_id):
     )
 
     return redirect(url_for("admin"))
-    @app.route("/admin/deactivate-subscription/<int:user_id>", methods=["POST"])
+@app.route("/admin/deactivate-subscription/<int:user_id>", methods=["POST"])
 @owner_required
 def deactivate_subscription(user_id):
     target_user = db.session.get(User, user_id)
