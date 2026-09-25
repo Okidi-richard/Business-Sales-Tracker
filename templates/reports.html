@@ -60,10 +60,17 @@
                 <td>
                     UGX {{ "{:,.0f}".format(total_expenses or 0) }}
                 </td>
-            </tr>
+                </tr>
 
-            <tr>
-                <td><strong>Net Profit</strong></td>
+    <tr>
+        <td>Total Received</td>
+        <td>
+            UGX {{ "{:,.0f}".format(total_received or 0) }}
+        </td>
+    </tr>
+
+    <tr>
+        <td><strong>Net Profit</strong></td>
                 <td>
                     <strong>
                         UGX {{ "{:,.0f}".format(net_profit or 0) }}
@@ -72,11 +79,11 @@
             </tr>
 
             <tr>
-                <td>Customers Owing</td>
-                <td>
-                    UGX {{ "{:,.0f}".format(total_owing or 0) }}
-                </td>
-            </tr>
+    <td><strong>Outstanding Customer Balances</strong></td>
+    <td>
+        <strong>UGX {{ "{:,.0f}".format(total_owing or 0) }}</strong>
+    </td>
+</tr>
 
         </tbody>
     </table>
