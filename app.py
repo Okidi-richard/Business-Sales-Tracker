@@ -676,10 +676,11 @@ def sales():
     customers = Customer.query.filter_by(user_id=user.id).order_by(Customer.name.asc()).all()
     if request.method == "POST":
         try:
-            product_ids = request.form.getlist("product_id")
-            quantities = request.form.getlist("quantity")
-units = request.form.getlist("unit")
-amount_paid = float(request.form.get("amount_paid", 0))
+                    product_ids = request.form.getlist("product_id")
+        quantities = request.form.getlist("quantity")
+        units = request.form.getlist("unit")
+
+        amount_paid = float(request.form.get("amount_paid", 0))
 
             customer_id = (
                 int(request.form["customer_id"])
