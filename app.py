@@ -673,31 +673,103 @@ def sales():
     user = current_user()
     products = Product.query.filter_by(user_id=user.id).order_by(Product.name.asc()).all()
     customers = Customer.query.filter_by(user_id=user.id).order_by(Customer.name.asc()).all()
-    if request.method == "POST":
+        if request.method == "POST":
         try:
-            product_id = int(request.form["product_id"])
-            quantity = float(request.form["quantity"])
+            product_ids = request.form.getlist("product_id")
+            quantities = request.form.getlist("quantity")
             amount_paid = float(request.form.get("amount_paid", 0))
-            customer_id = int(request.form["customer_id"]) if request.form.get("customer_id") else None
-            product = Product.query.filter_by(id=product_id, user_id=user.id).first()
-            if not product or quantity <= 0 or quantity > product.quantity or amount_paid < 0:
-                raise ValueError
-            total = quantity * product.selling_price
-            if amount_paid > total:
-                raise ValueError
-            sale = Sale(user_id=user.id, customer_id=customer_id, total=total, amount_paid=amount_paid)
+
+            customer_id = (
+                int(request.form["customer_id"])
+                if request.form.get("customer_id")
+                else None
+            )
+
+            if not product_ids or not quantities:
+                raise ValueError("Please add at least one product.")
+
+            if len(product_ids) != len(quantities):
+                raise ValueError("Product and quantity details do not match.")
+
+            sale_items = []
+            total = 0
+
+            for product_id, quantity in zip(product_ids, quantities):
+                product_id = int(product_id)
+                quantity = float(quantity)
+
+                product = Product.query.filter_by(
+                    id=product_id,
+                    user_id=user.id
+                ).first()
+
+                if not product:
+                    raise ValueError("One of the selected products was not found.")
+
+                if quantity <= 0 or quantity > product.quantity:
+                    raise ValueError(
+                        f"Invalid quantity for {product.name}. "
+                        f"Available stock: {product.quantity}"
+                    )
+
+                item_total = quantity * product.selling_price
+                total += item_total
+
+                sale_items.append({
+                    "product": product,
+                    "quantity": quantity,
+                    "unit_price": product.selling_price,
+                    "buying_price": product.buying_price
+                })
+
+            if amount_paid < 0 or amount_paid > total:
+                raise ValueError(
+                    "Amount paid cannot be greater than the total sale."
+                )
+
+            sale = Sale(
+                user_id=user.id,
+                customer_id=customer_id,
+                total=total,
+                amount_paid=amount_paid
+            )
+
             db.session.add(sale)
             db.session.flush()
-            db.session.add(SaleItem(sale_id=sale.id, product_id=product.id, quantity=quantity,
-                                    unit_price=product.selling_price, buying_price=product.buying_price))
-            product.quantity -= quantity
+
+            for item in sale_items:
+                db.session.add(
+                    SaleItem(
+                        sale_id=sale.id,
+                        product_id=item["product"].id,
+                        quantity=item["quantity"],
+                        unit_price=item["unit_price"],
+                        buying_price=item["buying_price"]
+                    )
+                )
+
+                item["product"].quantity -= item["quantity"]
+
             db.session.commit()
-            flash(f"Sale recorded: UGX {total:,.0f}.", "success")
+
+            flash(
+                f"Sale recorded: UGX {total:,.0f}",
+                "success"
+            )
+
         except (ValueError, TypeError):
             db.session.rollback()
-            flash("Please check the product, quantity and payment details.", "error")
-        return redirect(url_for("sales"))
-    recent = Sale.query.filter_by(user_id=user.id).order_by(Sale.created_at.desc()).limit(30).all()
+            flash(
+                "Please check the products, quantities and payment details.",
+                "error"
+            )
+
+        except Exception:
+            db.session.rollback()
+            flash(
+                "An error occurred while recording the sale.",
+                "error"
+            )
     return render_template("sales.html", products=products, customers=customers, sales=recent, user=user)
 
 
