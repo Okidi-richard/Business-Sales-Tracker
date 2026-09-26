@@ -678,7 +678,8 @@ def sales():
         try:
             product_ids = request.form.getlist("product_id")
             quantities = request.form.getlist("quantity")
-            amount_paid = float(request.form.get("amount_paid", 0))
+units = request.form.getlist("unit")
+amount_paid = float(request.form.get("amount_paid", 0))
 
             customer_id = (
                 int(request.form["customer_id"])
@@ -686,19 +687,18 @@ def sales():
                 else None
             )
 
-            if not product_ids or not quantities:
-                raise ValueError("Please add at least one product.")
+            if not product_ids or not quantities or not units:
+    raise ValueError("Please add at least one product.")
 
-            if len(product_ids) != len(quantities):
-                raise ValueError("Product and quantity details do not match.")
+    if not (len(product_ids) == len(quantities) == len(units)):
+        raise ValueError("Product, quantity and unit details do not match.")
 
-            sale_items = []
-            total = 0
+    sale_items = []
+    total = 0
 
-            for product_id, quantity in zip(product_ids, quantities):
-                product_id = int(product_id)
-                quantity = float(quantity)
-
+    for product_id, quantity, unit in zip(product_ids, quantities, units):
+        product_id = int(product_id)
+        quantity = float(quantity)
                 product = Product.query.filter_by(
                     id=product_id,
                     user_id=user.id
@@ -713,15 +713,13 @@ def sales():
                         f"Available stock: {product.quantity}"
                     )
 
-                item_total = quantity * product.selling_price
-                total += item_total
-
                 sale_items.append({
-                    "product": product,
-                    "quantity": quantity,
-                    "unit_price": product.selling_price,
-                    "buying_price": product.buying_price
-                })
+    "product": product,
+    "quantity": quantity,
+    "unit": unit,
+    "unit_price": product.selling_price,
+    "buying_price": product.buying_price
+})
 
             if amount_paid < 0 or amount_paid > total:
                 raise ValueError(
@@ -740,14 +738,14 @@ def sales():
 
             for item in sale_items:
                 db.session.add(
-                    SaleItem(
-                        sale_id=sale.id,
-                        product_id=item["product"].id,
-                        quantity=item["quantity"],
-                        unit_price=item["unit_price"],
-                        buying_price=item["buying_price"]
-                    )
-                )
+                   SaleItem(
+    sale_id=sale.id,
+    product_id=item["product"].id,
+    quantity=item["quantity"],
+    unit=item["unit"],
+    unit_price=item["unit_price"],
+    buying_price=item["buying_price"]
+)
 
                 item["product"].quantity -= item["quantity"]
 
