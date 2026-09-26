@@ -673,7 +673,7 @@ def sales():
     user = current_user()
     products = Product.query.filter_by(user_id=user.id).order_by(Product.name.asc()).all()
     customers = Customer.query.filter_by(user_id=user.id).order_by(Customer.name.asc()).all()
-        if request.method == "POST":
+    if request.method == "POST":
         try:
             product_ids = request.form.getlist("product_id")
             quantities = request.form.getlist("quantity")
