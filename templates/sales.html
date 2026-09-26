@@ -19,58 +19,117 @@
     <div class="card">
         <h2>Record New Sale</h2>
 
-        <form method="POST">
+       <form method="POST">
 
-            <label for="product_id">Product</label>
-            <select name="product_id" id="product_id" required>
+    <label>Products</label>
+
+    <div id="product-list">
+
+        <div class="product-row" style="margin-bottom: 15px;">
+
+            <select name="product_id" required style="margin-right: 10px;">
                 <option value="">-- Select Product --</option>
 
                 {% for product in products %}
-                    <option value="{{ product.id }}">
-                        {{ product.name }} -
-                        UGX {{ "{:,.0f}".format(product.selling_price) }}
-                        (Stock: {{ product.quantity }})
-                    </option>
+                <option value="{{ product.id }}">
+                    {{ product.name }} -
+                    UGX {{ "{:,.0f}".format(product.selling_price) }}
+                    (Stock: {{ product.quantity }})
+                </option>
                 {% endfor %}
+
             </select>
 
-            <label for="customer_id">Customer</label>
-            <select name="customer_id" id="customer_id">
-                <option value="">-- Walk-in Customer --</option>
-
-                {% for customer in customers %}
-                    <option value="{{ customer.id }}">
-                        {{ customer.name }}
-                        {% if customer.phone %}
-                            - {{ customer.phone }}
-                        {% endif %}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <label for="quantity">Quantity</label>
             <input
                 type="number"
                 name="quantity"
-                id="quantity"
                 min="0.01"
                 step="0.01"
+                placeholder="Quantity"
                 required
             >
 
-            <label for="amount_paid">Amount Paid (UGX)</label>
-            <input
-                type="number"
-                name="amount_paid"
-                id="amount_paid"
-                min="0"
-                step="1"
-                required
-            >
+            <button type="button" onclick="removeProduct(this)" style="margin-left: 10px;">
+                Remove
+            </button>
 
-            <button type="submit">Record Sale</button>
+        </div>
 
-        </form>
+    </div>
+
+    <button type="button" onclick="addProduct()" style="margin-bottom: 20px;">
+        + Add Another Product
+    </button>
+
+    <br>
+
+    <label for="customer_id">Customer</label>
+
+    <select name="customer_id" id="customer_id">
+
+        <option value="">-- Walk-in Customer --</option>
+
+        {% for customer in customers %}
+        <option value="{{ customer.id }}">
+            {{ customer.name }}
+            {% if customer.phone %}
+            - {{ customer.phone }}
+            {% endif %}
+        </option>
+        {% endfor %}
+
+    </select>
+
+    <br><br>
+
+    <label for="amount_paid">Amount Paid (UGX)</label>
+
+    <input
+        type="number"
+        name="amount_paid"
+        id="amount_paid"
+        min="0"
+        step="1"
+        required
+    >
+
+    <br><br>
+
+    <button type="submit">Record Sale</button>
+
+</form>
+
+<script>
+function addProduct() {
+
+    const productList = document.getElementById("product-list");
+
+    const firstRow = productList.querySelector(".product-row");
+
+    const newRow = firstRow.cloneNode(true);
+
+    // Reset product selection
+    newRow.querySelector("select").value = "";
+
+    // Reset quantity
+    newRow.querySelector("input").value = "";
+
+    productList.appendChild(newRow);
+}
+
+
+function removeProduct(button) {
+
+    const productList = document.getElementById("product-list");
+
+    const rows = productList.querySelectorAll(".product-row");
+
+    // Always keep at least one product row
+    if (rows.length > 1) {
+        button.parentElement.remove();
+    }
+}
+</script>
     </div>
 
     <div class="card">
