@@ -5,7 +5,7 @@ from functools import wraps
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, text
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -76,8 +76,9 @@ class SaleItem(db.Model):
     sale_id = db.Column(db.Integer, db.ForeignKey("sale.id"), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     quantity = db.Column(db.Float, nullable=False)
+    unit = db.Column(db.String(50), nullable=False, default="piece")
     unit_price = db.Column(db.Float, nullable=False)
-    buying_price = db.Column(db.Float, nullable=False)    
+    buying_price = db.Column(db.Float, nullable=False)
     product = db.relationship("Product")
 
     @property
@@ -806,6 +807,18 @@ def reports():
         sales=sales[:50])
 with app.app_context():
     db.create_all()
+
+    # Add unit column to existing SaleItem table if it does not exist
+    try:
+        db.session.execute(
+            text(
+                "ALTER TABLE sale_item "
+                "ADD COLUMN IF NOT EXISTS unit VARCHAR(50) DEFAULT 'piece'"
+            )
+        )
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
     # Repair the current prototype: if no owner/admin exists, make the oldest account the owner.
     if User.query.filter(User.role.in_(["owner", "admin"])).count() == 0:
         first = User.query.order_by(User.created_at.asc()).first()
