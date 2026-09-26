@@ -770,7 +770,9 @@ def sales():
                 "An error occurred while recording the sale.",
                 "error"
             )
-    return render_template("sales.html", products=products, customers=customers, sales=recent, user=user)
+    recent = Sale.query.filter_by(user_id=user.id).order_by(Sale.created_at.desc()).all()
+
+return render_template("sales.html", products=products, customers=customers, sales=recent, user=user)
 
 
 @app.route("/receipts/<int:sale_id>")
