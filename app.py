@@ -689,15 +689,15 @@ def sales():
             )
 
             if not product_ids or not quantities or not units:
-    raise ValueError("Please add at least one product.")
+                raise ValueError("Please add at least one product.")
 
-    if not (len(product_ids) == len(quantities) == len(units)):
-        raise ValueError("Product, quantity and unit details do not match.")
+            if not (len(product_ids) == len(quantities) == len(units)):
+                raise ValueError("Product, quantity and unit details do not match.")
 
-    sale_items = []
-    total = 0
+            sale_items = []
+            total = 0
 
-    for product_id, quantity, unit in zip(product_ids, quantities, units):
+            for product_id, quantity, unit in zip(product_ids, quantities, units):
         product_id = int(product_id)
         quantity = float(quantity)
                 product = Product.query.filter_by(
